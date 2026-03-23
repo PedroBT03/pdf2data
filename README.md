@@ -62,6 +62,45 @@ pdf2data_metadata path_to_folder path_to_results
 pdf2data_references path_to_folder path_to_results
 ```
 
+## Update and Publish (PyPI)
+
+Use this flow when you make changes and want to publish a new package version.
+
+```bash
+# 1) Bump version in pyproject.toml
+# [project]
+# version = "0.0.2"
+
+# 2) (Optional) Keep __version__ in sync
+# edit pdf2data/__init__.py
+
+# 3) Install/reinstall build tools
+python -m pip install --upgrade build twine
+
+# 4) Clean previous artifacts
+rm -rf dist build *.egg-info
+
+# 5) Build package
+python -m build
+
+# 6) Validate distribution files
+python -m twine check dist/*
+
+# 7) Upload to PyPI
+python -m twine upload dist/*
+```
+
+When prompted by `twine`:
+- Username: `__token__`
+- Password: your PyPI token (`pypi-...`)
+
+Verify the release:
+
+```bash
+pip install --upgrade pdf2data-tools
+pip show pdf2data-tools
+```
+
 ## License
 
 Apache Software License 2.0
