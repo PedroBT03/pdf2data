@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdf2data-tools"
-version = "0.0.1"
+version = "0.0.2"
 description = "Transforms PDF files into machine readable JSON files"
 readme = "README.md"
 license = "Apache-2.0"
@@ -75,7 +75,7 @@ include = ["pdf2data", "pdf2data.*"]
 addopts = "--ignore=setup.py"
 
 [tool.bumpversion]
-current_version = "0.0.1"
+current_version = "0.0.2"
 commit = true
 tag = true
 
