@@ -1,5 +1,4 @@
 import os
-from difflib import SequenceMatcher
 from io import BytesIO
 from typing import Any, Container, Dict, List, Optional
 from Levenshtein import ratio
@@ -16,6 +15,8 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFPageInterpreter, PDFResourceManager
 from pdfminer.pdfpage import PDFPage
 from trieregex import TrieRegEx as TRE
+from rapidfuzz import fuzz
+from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 
 class Latex2Table(BaseModel):
     _replace_regex: Optional[re.Pattern] = PrivateAttr(default=None)
@@ -538,7 +539,7 @@ def verify_string_in_list(string: str, list_of_words: List[str]) -> bool:
         True if the string exists, False otherwise
     """
     for entry in list_of_words:
-        similarity: float = SequenceMatcher(None, entry, string).ratio()
+        similarity: float = fuzz.ratio(entry, string) / 100
         if similarity > 0.9:
             return True
     return False
@@ -1153,7 +1154,7 @@ def verify_string(ref_string: str, string: str, threshold: float=0.8) -> bool:
     """
     ref_string = ref_string.replace(' ', '').lower()
     string = string.replace(' ', '').lower()
-    similarity: float = SequenceMatcher(None, ref_string, string).ratio()
+    similarity: float = fuzz.ratio(ref_string, string) / 100
     if similarity >= threshold:
         return True
     return False
@@ -1362,7 +1363,7 @@ def entries_similarity_horizontal(ref_structure: List[List[str]], structure: Lis
     test_string = test_string.replace(" ", "").lower()
     return ratio(ref_string, test_string)
 
-def entries_similarity_vertical(ref_structure: List[List[str]], structure: List[List[str]]) -> float:
+def entries_similarity_vertical(ref_structure: List[List[str]], structure: List[List[str]], ratio_type="Levenshtein") -> float:
     """Calculate the degree of similarity between two tables, by transforming them into string vertically
 
     Parameters
@@ -1392,7 +1393,13 @@ def entries_similarity_vertical(ref_structure: List[List[str]], structure: List[
     test_string: str = "".join(test)
     ref_string = ref_string.replace(" ", "").lower()
     test_string = test_string.replace(" ", "").lower()
-    return ratio(ref_string, test_string)
+    if ratio_type == "Levenshtein":
+        ratio_value = fuzz.ratio(ref_string, test_string) / 100
+    elif ratio_type == "BLEU":
+        ratio_value = sentence_bleu([ref_string.split()], test_string.split())
+    else:
+        raise AssertionError("The ratio type is not valid")
+    return ratio_value
 
 def box_cxcywh_to_xyxy(box: Any) -> torch.Tensor:
     """Convert box into xyxy format
