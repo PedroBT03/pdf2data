@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdf2data-tools"
-version = "0.0.2"
+version = "0.0.3"
 description = "Transforms PDF files into machine readable JSON files"
 readme = "README.md"
 license = "Apache-2.0"
