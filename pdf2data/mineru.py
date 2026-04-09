@@ -106,6 +106,9 @@ class MinerU(Pipeline):
         for block in blocks:
             if block["type"] == "table_caption":
                 table_object.caption = self.get_text_from_lines(block["lines"])
+                caption_bbox = block.get("bbox")
+                if caption_bbox is not None:
+                    table_object.caption_box = self.correct_box_size(caption_bbox, page_size, pdf_file_path, page_number)
             elif block["type"] == "table_footnote":
                 table_object.footnotes = self.get_text_from_lines(block["lines"])
             elif block["type"] == "table_body":
@@ -114,6 +117,7 @@ class MinerU(Pipeline):
             return None
         old_table_block = table_object.block.copy()
         table_object.block = self.correct_table_structure(table_object.block)
+        table_object.cell_boxes = self.get_uniform_cell_boxes(table_object.box, table_object.block)
         if len(old_table_block) != len(table_object.block):
             table_object.caption = old_table_block[0][0]
         table_object.column_headers = self.find_column_headers(table_object.block)
