@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pdf2data-tools"
-version = "0.0.4"
+version = "0.1.0"
 description = "Transforms PDF files into machine readable JSON files"
 readme = "README.md"
 license = "Apache-2.0"
@@ -62,6 +62,7 @@ pdf2data_detect_image = "pdf2data.cli.table_detector:main"
 pdf2data = "pdf2data.cli.pdf2data:main"
 pdf2data_find_blocks = "pdf2data.cli.block_finder:main"
 pdf2data_find_text = "pdf2data.cli.text_finder:main"
+pdf2data_edit = "pdf2data.cli.edit:main"
 
 [project.urls]
 Homepage = "https://github.com/pocoyo7798/pdf2data"
@@ -75,7 +76,7 @@ include = ["pdf2data", "pdf2data.*"]
 addopts = "--ignore=setup.py"
 
 [tool.bumpversion]
-current_version = "0.0.4"
+current_version = "0.1.0"
 commit = true
 tag = true
 
