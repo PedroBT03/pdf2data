@@ -112,3 +112,4 @@ package-lock.json
 # Build artifacts
 dist/
 
+api_token.txt
